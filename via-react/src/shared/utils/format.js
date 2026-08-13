@@ -1,0 +1,4 @@
+export function formatINR(n) {
+  if (typeof n !== 'number' || isNaN(n)) return '₹0'
+  return '₹' + n.toLocaleString('en-IN')
+}

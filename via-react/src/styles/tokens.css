@@ -1,0 +1,102 @@
+/* ============================================================
+   VIA — design tokens (ported from the original Tailwind config)
+   ============================================================ */
+:root {
+  /* Colors - South Indian Traditional Luxury Palette */
+  --primary: #14100c;
+  --on-primary: #ffffff;
+  --primary-container: #1e1712;
+  --on-primary-container: #ede3d5;
+  --secondary: #d4af37;
+  --secondary-text: #96681e; /* Deep Antique Gold - 4.97:1 contrast on #FFFFFF (WCAG AA pass) */
+  --secondary-hover: #e5be48;
+  --secondary-glow: rgba(212, 175, 55, 0.38);
+  --gold-gradient: linear-gradient(135deg, #fce5a3 0%, #d4af37 50%, #99741a 100%);
+  --zari-gold-gradient: linear-gradient(135deg, #fce5a3 0%, #d4af37 50%, #99741a 100%);
+  --gold-gradient-soft: linear-gradient(135deg, rgba(252, 229, 163, 0.18) 0%, rgba(212, 175, 55, 0.18) 100%);
+  --temple-red: #7a1717;
+  --temple-red-dark: #4a0d0d;
+  --temple-red-gradient: linear-gradient(135deg, #8a1d1d 0%, #591010 100%);
+  --emerald-deep: #0f3624;
+  --kasavu-cream: #faf5e8;
+  --on-secondary: #ffffff;
+  --secondary-container: #f9f4e6;
+  --on-secondary-container: #40310c;
+  --secondary-fixed: #f3dfae;
+  --tertiary: #1a1511;
+  --on-tertiary: #ffffff;
+  --error: #c92a2a;
+  --on-error: #ffffff;
+  --error-container: #ffe3e3;
+  --on-error-container: #800000;
+  --background: #fdfaf3;
+  --on-background: #14100c;
+  --surface: #fdfaf3;
+  --on-surface: #14100c;
+  --surface-dim: #e6dfd1;
+  --surface-bright: #ffffff;
+  --surface-container-lowest: #ffffff;
+  --surface-container-low: #f7f2e8;
+  --surface-container: #f2ebe0;
+  --surface-container-high: #e5dec9;
+  --surface-container-highest: #ded3c1;
+  --surface-variant: #e6dbc7;
+  --on-surface-variant: #5c5243;
+  --text-muted: #5c5243;
+  --outline: #7a6f5d;
+  --outline-variant: #e5dec9;
+  --inverse-surface: #262019;
+  --inverse-on-surface: #f9f5eb;
+  --inverse-primary: #d9cdb8;
+
+  /* Glassmorphism & Shadows */
+  --luxury-black: #0b0a09;
+  --silk-cream: #faf7f2;
+  --glass-bg: rgba(253, 250, 243, 0.78);
+  --glass-bg-dark: rgba(14, 11, 8, 0.88);
+  --glass-border: rgba(212, 175, 55, 0.32);
+  --glass-panel-bg: rgba(255, 255, 255, 0.05);
+  --glass-panel-border: rgba(212, 175, 55, 0.28);
+  --glass-blur: blur(20px);
+  --shadow-sm: 0 4px 14px rgba(20, 16, 12, 0.04);
+  --shadow-md: 0 10px 30px rgba(20, 16, 12, 0.08);
+  --shadow-lg: 0 20px 48px rgba(20, 16, 12, 0.14);
+  --shadow-3d: 0 16px 36px -8px rgba(20, 16, 12, 0.18), 0 0 1px 1px rgba(212, 175, 55, 0.25);
+  --shadow-gold: 0 8px 25px rgba(212, 175, 55, 0.38);
+  --shadow-glow: 0 0 38px rgba(212, 175, 55, 0.28);
+
+  /* Borders & Decorative Trims */
+  --zari-border: 1px solid rgba(212, 175, 55, 0.4);
+
+  /* Spacing scale */
+  --space-base: 4px;
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 32px;
+  --space-lg: 64px;
+  --space-xl: 128px;
+  --gutter: 28px;
+  --margin-mobile: 20px;
+  --margin-desktop: 64px;
+
+  /* Radii */
+  --radius: 0.375rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1.25rem;
+  --radius-full: 9999px;
+
+  /* Fonts - Heritage South Indian & Serif */
+  --font-heritage: 'Marcellus', 'Cinzel', 'Cormorant Garamond', Georgia, serif;
+  --font-display: 'Cinzel', 'Marcellus', 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-serif: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-body: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+
+  /* Page horizontal margin (responsive) */
+  --page-x: var(--margin-mobile);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --page-x: var(--margin-desktop);
+  }
+}

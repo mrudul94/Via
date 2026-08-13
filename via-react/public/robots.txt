@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Ensure Googlebot can crawl favicon files for search result listings
+Allow: /favicon.ico
+Allow: /favicon.svg
+Allow: /favicon-96x96.png
+Allow: /apple-touch-icon.png
+Allow: /site.webmanifest
