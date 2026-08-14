@@ -217,7 +217,7 @@ export default function Home() {
         </div>
       </Reveal>
 
-      {/* 7. Reviews */}
+      {/* 7. Reviews  */}
       <Reveal as="section" className="section section--pad section--alt">
         <div className="section__head" style={{ justifyContent: 'center', textAlign: 'center' }}>
           <div>
