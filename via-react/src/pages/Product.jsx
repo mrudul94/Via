@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import Icon from '../components/Icon'
 import ProductCard from '../components/ProductCard'
-import { useCart, buyOnWhatsApp } from '../context/CartContext'
+import { useCart } from '../context/CartContext'
 import { useToast } from '../context/ToastContext'
 import { useCMS } from '../context/CMSContext'
 import { formatINR } from '../utils/format'
 
-import { Link } from 'react-router-dom'
-
 export default function Product() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const { products, findProduct } = useCMS()
   const product = findProduct(id)
   const { addToCart } = useCart()
@@ -120,7 +119,7 @@ export default function Product() {
           <button
             className="btn btn--outline btn--block"
             style={{ marginTop: '12px' }}
-            onClick={() => buyOnWhatsApp(product.id)}
+            onClick={() => navigate(`/buy-now/${product.id}?qty=${qty}`)}
           >
             <Icon name="chat" className="icon-sm" /> Buy on WhatsApp
           </button>

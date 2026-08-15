@@ -129,7 +129,7 @@ export default function Home() {
           <div className="category-grid">
             {categoryTiles.map((c) => (
               <Link key={c.name} to={`/shop?cat=${c.name}`} className="category-tile">
-                <img src={c.img} alt={c.name} />
+                <img src={c.img} alt={c.name} loading="lazy" decoding="async" />
                 <div className="category-tile__label">
                   <span style={{ fontSize: '10px', fontWeight: 700, letterSpacing: '0.2em', color: 'var(--secondary-fixed)', textTransform: 'uppercase', marginBottom: '4px' }}>
                     CURATED EDIT

@@ -6,11 +6,22 @@ export const adminCmsService = {
     if (!isSupabaseConfigured() || !supabase) return null
 
     try {
-      // 1. Categories
-      const { data: catData } = await supabase
-        .from('categories')
-        .select('*')
-        .order('priority', { ascending: true })
+      // Parallel concurrent queries via Promise.all
+      const [
+        { data: catData },
+        { data: prodData },
+        { data: heroData },
+        { data: annData },
+        { data: revData },
+        { data: setDa },
+      ] = await Promise.all([
+        supabase.from('categories').select('*').order('priority', { ascending: true }),
+        supabase.from('products').select('*').order('priority', { ascending: true }),
+        supabase.from('hero').select('*').eq('id', 1).maybeSingle(),
+        supabase.from('announcements').select('*').order('priority', { ascending: true }),
+        supabase.from('reviews').select('*'),
+        supabase.from('store_settings').select('*').eq('id', 1).maybeSingle(),
+      ])
 
       const categories = (catData || []).map((c) => ({
         id: c.id,
@@ -22,12 +33,6 @@ export const adminCmsService = {
 
       const catMapById = new Map(categories.map((c) => [c.id, c.name]))
       const catMapByName = new Map(categories.map((c) => [c.name.toLowerCase(), c.id]))
-
-      // 2. Products
-      const { data: prodData } = await supabase
-        .from('products')
-        .select('*')
-        .order('priority', { ascending: true })
 
       const products = (prodData || []).map((p) => {
         const catName = p.category_id ? (catMapById.get(p.category_id) || p.category_name) : p.category_name
@@ -50,13 +55,6 @@ export const adminCmsService = {
         }
       })
 
-      // 3. Hero
-      const { data: heroData } = await supabase
-        .from('hero')
-        .select('*')
-        .eq('id', 1)
-        .maybeSingle()
-
       const hero = heroData
         ? {
             eyebrow: heroData.eyebrow,
@@ -74,29 +72,14 @@ export const adminCmsService = {
             bgFit: 'ambient',
           }
 
-      // 4. Announcements
-      const { data: annData } = await supabase
-        .from('announcements')
-        .select('*')
-        .order('priority', { ascending: true })
-
       const marquee = (annData || []).map((a) => a.text).filter(Boolean)
 
-      // 5. Reviews
-      const { data: revData } = await supabase.from('reviews').select('*')
       const reviews = (revData || []).map((r) => ({
         id: r.id,
         author: r.author,
         stars: Number(r.stars || 5),
         text: r.text,
       }))
-
-      // 6. Settings
-      const { data: setDa } = await supabase
-        .from('store_settings')
-        .select('*')
-        .eq('id', 1)
-        .maybeSingle()
 
       const settings = setDa
         ? {

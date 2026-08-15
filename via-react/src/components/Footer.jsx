@@ -1,56 +1,10 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Icon from './Icon'
 import { VIA_WHATSAPP_NUMBER, VIA_INSTAGRAM } from '../config'
 
 export default function Footer() {
-  const [email, setEmail] = useState('')
-  const [subscribed, setSubscribed] = useState(false)
-
-  const handleSubscribe = (e) => {
-    e.preventDefault()
-    if (email.trim()) {
-      setSubscribed(true)
-      setEmail('')
-      setTimeout(() => setSubscribed(false), 5000)
-    }
-  }
-
   return (
     <footer id="contact" className="site-footer">
-      {/* Top VIP Newsletter Banner */}
-      <div className="site-footer__vip">
-        <div className="site-footer__vip-content">
-          <span className="site-footer__vip-tag">EXCLUSIVITY & ELEGANCE</span>
-          <h3 className="site-footer__vip-title">Join The VIA Circle</h3>
-          <p className="site-footer__vip-text">
-            Subscribe for private collection launches, VIP rewards, and 10% off your first luxury order.
-          </p>
-        </div>
-        <form className="site-footer__vip-form" onSubmit={handleSubscribe}>
-          {subscribed ? (
-            <div className="site-footer__vip-success">
-              <Icon name="check_circle" className="icon-sm" /> Thank you for joining the VIA Circle! Check your inbox soon.
-            </div>
-          ) : (
-            <div className="site-footer__vip-input-wrap">
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="site-footer__vip-input"
-              />
-              <button type="submit" className="site-footer__vip-btn">
-                <span>SUBSCRIBE</span>
-                <Icon name="arrow_forward" className="icon-sm" />
-              </button>
-            </div>
-          )}
-        </form>
-      </div>
-
       {/* Main Footer Content Grid */}
       <div className="site-footer__grid">
         {/* Col 1: Brand & Contact */}

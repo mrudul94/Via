@@ -33,9 +33,21 @@ export default function ProductCard({ product: p, forceTag }) {
         ) : discountPct > 0 ? (
           <span className="product-card__discount">-{discountPct}% OFF</span>
         ) : null}
-        <img src={p.img} className={`product-card__img${p.img2 ? ' product-card__img--primary' : ''}`} alt={p.name} />
+        <img
+          src={p.img}
+          className={`product-card__img${p.img2 ? ' product-card__img--primary' : ''}`}
+          alt={p.name}
+          loading="lazy"
+          decoding="async"
+        />
         {p.img2 && (
-          <img src={p.img2} className="product-card__img product-card__img--hover" alt={`${p.name} view 2`} />
+          <img
+            src={p.img2}
+            className="product-card__img product-card__img--hover"
+            alt={`${p.name} view 2`}
+            loading="lazy"
+            decoding="async"
+          />
         )}
         <button
           className={`product-card__wish${wished ? ' is-active' : ''}`}

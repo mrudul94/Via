@@ -21,10 +21,21 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* clip, not hidden: overflow-x:hidden turns the element into a scroll
+     container, which is what silently broke position:sticky here. clip
+     contains stray overflow without that side effect. */
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
+/* Scroll lock for the mobile nav / cart drawer. position:fixed is the only
+   variant iOS Safari honours; Layout.jsx sets `top` and restores the offset
+   on unlock so the page does not jump to the top when the drawer closes. */
 body.is-locked {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
   overflow: hidden;
 }
 
@@ -238,11 +249,34 @@ textarea {
   box-shadow: var(--shadow-md);
 }
 
+/* ---------- Topbar (announcement bar + header) ----------
+   One fixed wrapper holds both bars. Previously the marquee was
+   position:sticky and the header position:fixed with a hard-coded top
+   offset that had to match the marquee's height exactly — any mismatch,
+   or any browser that dropped the sticky, left a transparent strip at the
+   top of the viewport that scrolling content showed through. Pinning the
+   pair together makes that gap structurally impossible. */
+.site-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0; /* not width:100vw — that overflows by the scrollbar width */
+  z-index: var(--z-topbar);
+  display: flex;
+  flex-direction: column;
+  /* Paint over the page even where children are translucent, and give the
+     bar its own stacking context so no section can slip above it. */
+  isolation: isolate;
+  background: var(--primary);
+  padding-top: env(safe-area-inset-top);
+}
+
 /* ---------- Marquee ---------- */
 .marquee-bar {
-  position: sticky;
-  top: 0;
-  z-index: 60;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   background: var(--primary);
   color: var(--secondary-fixed);
   padding: 10px 0;
@@ -272,11 +306,13 @@ textarea {
 
 /* ---------- Header ---------- */
 .site-header {
-  position: fixed;
-  top: 37px;
-  left: 0;
+  /* Positioned by .site-topbar — must stay in flow so the two bars share a
+     single measured height. Do not reintroduce position:fixed here. */
+  position: relative;
   width: 100%;
-  height: 72px;
+  max-width: 100%;
+  box-sizing: border-box;
+  height: var(--header-h);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -286,8 +322,7 @@ textarea {
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid rgba(197, 160, 89, 0.3);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  z-index: 50;
-  transition: all 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 .site-header__brand {
   display: flex;
@@ -442,7 +477,7 @@ textarea {
   width: 80%;
   max-width: 20rem;
   background: var(--surface);
-  z-index: 80;
+  z-index: var(--z-nav);
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -487,7 +522,7 @@ textarea {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.3);
-  z-index: 75;
+  z-index: var(--z-nav-overlay);
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s;
@@ -502,7 +537,7 @@ textarea {
   position: fixed;
   inset: 0;
   background: var(--surface);
-  z-index: 90;
+  z-index: var(--z-search);
   padding-top: 40px;
   overflow-y: auto;
 }
@@ -606,7 +641,10 @@ textarea {
 
 /* ---------- Main ---------- */
 .site-main {
-  padding-top: 72px;
+  /* The whole topbar is out of flow, so main must offset by its full
+     measured height. This is the only content offset in the app and it
+     applies to every route via Layout. */
+  padding-top: var(--topbar-h);
 }
 
 /* ---------- Footer ---------- */
@@ -1027,7 +1065,7 @@ textarea {
   inset: 0;
   background: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(4px);
-  z-index: 95;
+  z-index: var(--z-cart-overlay);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.5s;
@@ -1043,7 +1081,7 @@ textarea {
   height: 100%;
   width: 100%;
   background: var(--surface);
-  z-index: 96;
+  z-index: var(--z-cart);
   transform: translateX(100%);
   transition: transform 0.5s ease-in-out;
   display: flex;
@@ -1229,7 +1267,7 @@ textarea {
   position: fixed;
   bottom: 24px;
   right: 24px;
-  z-index: 55;
+  z-index: var(--z-float);
   width: 56px;
   height: 56px;
   border-radius: var(--radius-full);
@@ -1258,7 +1296,7 @@ textarea {
   font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  z-index: 100;
+  z-index: var(--z-toast);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s;

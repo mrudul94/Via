@@ -47,8 +47,10 @@
   min-height: 620px;
   width: 100%;
   overflow: hidden;
-  margin-top: -72px;
-  padding-top: 72px;
+  /* Full-bleed: cancel .site-main's offset so the artwork runs up behind the
+     topbar, then pad the same amount back in so content clears it. */
+  margin-top: calc(-1 * var(--topbar-h));
+  padding-top: var(--topbar-h);
   background-color: #0c0b0a;
 }
 .hero__bg {
@@ -556,11 +558,11 @@
   box-shadow: 0 8px 25px rgba(220, 39, 67, 0.6);
 }
 
-/* Live Frame Wrapper */
+/* ---------- Instagram Live Window Showcase ---------- */
 .insta-live-frame-wrapper {
   background: #181818;
   border: 1px solid rgba(197, 160, 89, 0.35);
-  border-radius: 20px;
+  border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   display: flex;
@@ -569,7 +571,7 @@
 
 .insta-live-frame-bar {
   background: #111111;
-  padding: 12px 20px;
+  padding: 10px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -582,8 +584,8 @@
   gap: 6px;
 }
 .insta-live-frame-dots .dot {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
 }
 .dot-red { background: #ff5f56; }
@@ -592,9 +594,9 @@
 
 .insta-live-frame-url {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.65);
   background: rgba(255, 255, 255, 0.05);
-  padding: 5px 16px;
+  padding: 4px 14px;
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -614,7 +616,7 @@
 .insta-live-iframe-container {
   position: relative;
   width: 100%;
-  height: 600px;
+  height: 520px;
   background: #ffffff;
 }
 
@@ -640,8 +642,8 @@
 }
 
 .insta-spinner {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border: 3px solid rgba(197, 160, 89, 0.2);
   border-top-color: var(--secondary);
   border-radius: 50%;
@@ -657,11 +659,11 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 16px 24px;
+  gap: 14px;
+  padding: 14px 20px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(197, 160, 89, 0.2);
-  border-radius: 16px;
+  border-radius: 14px;
 }
 
 .insta-live-footer-info {
@@ -671,6 +673,19 @@
   font-size: 13px;
   color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
+}
+
+.insta-footer-link {
+  color: var(--secondary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.insta-footer-link:hover {
+  color: #ffffff;
 }
 
 /* ---------- Newsletter ---------- */
@@ -889,7 +904,7 @@
 @media (min-width: 1024px) {
   .product-info {
     position: sticky;
-    top: 96px;
+    top: calc(var(--topbar-h) + 24px);
   }
 }
 .product-info__cat {
@@ -1069,37 +1084,87 @@
   gap: 32px;
 }
 .checkout-box {
-  background: var(--surface-container-lowest);
-  padding: 32px;
-  border: 1px solid var(--outline-variant);
+  background: var(--surface-container-lowest, #ffffff);
+  padding: 28px 32px;
+  border: 1px solid var(--outline-variant, rgba(197, 160, 89, 0.25));
+  border-radius: var(--radius-lg, 16px);
+  box-shadow: var(--shadow-sm, 0 4px 20px rgba(0, 0, 0, 0.04));
+}
+@media (max-width: 767px) {
+  .checkout-box {
+    padding: 20px 16px;
+    border-radius: 14px;
+  }
 }
 .checkout-box h2 {
   font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.15em;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--primary);
-  margin-bottom: 16px;
+  color: var(--primary, #111111);
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--outline-variant, rgba(197, 160, 89, 0.2));
+  padding-bottom: 8px;
+}
+.field-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--secondary-dark, #8c6b27);
+  margin-bottom: 6px;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .line-input {
   width: 100%;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid var(--outline-variant);
-  padding: 12px 0;
+  height: 46px;
+  background: var(--surface-container-low, #fcfbf9);
+  border: 1px solid rgba(197, 160, 89, 0.4);
+  border-radius: var(--radius, 8px);
+  padding: 0 14px;
   font-size: 16px;
+  color: var(--primary, #111111);
+  font-family: inherit;
   outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.line-input:hover {
+  border-color: rgba(197, 160, 89, 0.7);
 }
 .line-input::placeholder {
-  color: var(--outline);
+  color: #6b635b;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  opacity: 0.85;
 }
 .line-input:focus {
-  border-color: var(--primary);
+  color: var(--primary, #111111);
+  border-color: var(--secondary, #c5a059);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.2);
+}
+.line-input:focus::placeholder {
+  color: #6b635b;
+  opacity: 0.6;
+}
+.line-input.is-invalid {
+  border-color: #d32f2f !important;
+  background: rgba(211, 47, 47, 0.04) !important;
+}
+.field-error {
+  font-size: 11px;
+  color: #d32f2f;
+  font-weight: 600;
+  margin-top: 4px;
+  display: block;
 }
 .address-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--gutter);
+  gap: 16px;
 }
 @media (min-width: 768px) {
   .address-grid {
@@ -1108,11 +1173,6 @@
   .address-grid__full {
     grid-column: span 2;
   }
-}
-.address-grid__pair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
 }
 .checkout-note {
   background: var(--surface-container-low);
@@ -1142,7 +1202,7 @@
 @media (min-width: 1024px) {
   .checkout-summary {
     position: sticky;
-    top: 96px;
+    top: calc(var(--topbar-h) + 24px);
   }
 }
 .checkout-summary__box {

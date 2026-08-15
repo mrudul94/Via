@@ -52,85 +52,113 @@ export default function Checkout() {
         <form className="checkout-form" onSubmit={handleCheckout}>
           <section className="checkout-box">
             <h2>CONTACT INFORMATION</h2>
-            <input
-              className="line-input"
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="EMAIL ADDRESS"
-              required
-            />
+            <div>
+              <label className="field-label">EMAIL ADDRESS *</label>
+              <input
+                className="line-input"
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="Your email address"
+                required
+              />
+            </div>
           </section>
 
           <section className="checkout-box">
             <h2>SHIPPING ADDRESS</h2>
             <div className="address-grid">
-              <input
-                className="line-input"
-                type="text"
-                name="firstName"
-                value={form.firstName}
-                onChange={handleChange}
-                placeholder="FIRST NAME"
-                required
-              />
-              <input
-                className="line-input"
-                type="text"
-                name="lastName"
-                value={form.lastName}
-                onChange={handleChange}
-                placeholder="LAST NAME"
-                required
-              />
-              <input
-                className="line-input address-grid__full"
-                type="text"
-                name="address"
-                value={form.address}
-                onChange={handleChange}
-                placeholder="ADDRESS LINE 1"
-                required
-              />
-              <input
-                className="line-input"
-                type="text"
-                name="city"
-                value={form.city}
-                onChange={handleChange}
-                placeholder="CITY"
-                required
-              />
-              <div className="address-grid__pair">
+              <div>
+                <label className="field-label">FIRST NAME *</label>
+                <input
+                  className="line-input"
+                  type="text"
+                  name="firstName"
+                  value={form.firstName}
+                  onChange={handleChange}
+                  placeholder="First name"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="field-label">LAST NAME *</label>
+                <input
+                  className="line-input"
+                  type="text"
+                  name="lastName"
+                  value={form.lastName}
+                  onChange={handleChange}
+                  placeholder="Last name"
+                  required
+                />
+              </div>
+
+              <div className="address-grid__full">
+                <label className="field-label">DELIVERY ADDRESS *</label>
+                <input
+                  className="line-input"
+                  type="text"
+                  name="address"
+                  value={form.address}
+                  onChange={handleChange}
+                  placeholder="House, street and area"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="field-label">CITY / DISTRICT *</label>
+                <input
+                  className="line-input"
+                  type="text"
+                  name="city"
+                  value={form.city}
+                  onChange={handleChange}
+                  placeholder="Your city or district"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="field-label">STATE *</label>
                 <input
                   className="line-input"
                   type="text"
                   name="state"
                   value={form.state}
                   onChange={handleChange}
-                  placeholder="STATE"
+                  placeholder="Your state"
                   required
                 />
+              </div>
+
+              <div>
+                <label className="field-label">PIN CODE *</label>
                 <input
                   className="line-input"
                   type="text"
                   name="pincode"
                   value={form.pincode}
                   onChange={handleChange}
-                  placeholder="PIN CODE"
+                  placeholder="6-digit PIN code"
                   required
                 />
               </div>
-              <input
-                className="line-input address-grid__full"
-                type="tel"
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                placeholder="PHONE NUMBER"
-                required
-              />
+
+              <div className="address-grid__full">
+                <label className="field-label">PHONE NUMBER *</label>
+                <input
+                  className="line-input"
+                  type="tel"
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  placeholder="10-digit mobile number"
+                  required
+                />
+              </div>
             </div>
           </section>
 

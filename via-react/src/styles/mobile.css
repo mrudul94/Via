@@ -7,19 +7,38 @@
 /* ---------- Small-screen scale tokens ---------- */
 @media (max-width: 767px) {
   :root {
-    --gutter: 16px;
-  }
-}
-
-@media (max-width: 380px) {
-  :root {
     --margin-mobile: 16px;
-    --gutter: 12px;
+    --gutter: 16px;
+    --page-x: 16px;
   }
 }
 
 @media (max-width: 767px) {
-  /* ---------- Global guards ---------- */
+  /* ---------- Global guards ----------
+     100% (of the containing block), never 100vw: on mobile 100vw excludes
+     nothing and any padding on top of it pushes past the viewport edge,
+     which is what made the bars overhang. overflow-x is inherited from
+     base.css as `clip` so it cannot create a scroll container here. */
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  #root,
+  .site-main,
+  .section,
+  .section--pad {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .marquee-bar {
+    overflow: hidden;
+  }
+
   h1,
   h2,
   h3,
@@ -38,10 +57,11 @@
     font-size: 16px !important;
   }
 
-  /* ---------- Announcement bar + fixed header ----------
-     Header offset must equal the marquee height exactly, otherwise a
-     sliver of scrolling content shows through the gap. 9px + 9px
-     padding + (10px * 1.6 line-height) = 34px. */
+  /* ---------- Announcement bar + header ----------
+     No top offset here any more: both bars live inside the single fixed
+     .site-topbar, so they cannot separate and no measurement has to be
+     kept in sync by hand. Layout.jsx measures the pair and publishes
+     --topbar-h, which drives every content offset below. */
   .marquee-bar {
     padding: 9px 0;
   }
@@ -53,8 +73,6 @@
   }
 
   .site-header {
-    top: 34px;
-    height: 62px;
     padding: 0 var(--page-x);
   }
   .site-header__brand {
@@ -79,9 +97,7 @@
     right: -1px;
   }
 
-  .site-main {
-    padding-top: 62px;
-  }
+  /* .site-main offset comes from --topbar-h in base.css — no override. */
 
   /* ---------- Mobile drawer ---------- */
   .mobile-nav {
@@ -153,14 +169,13 @@
   .hero {
     height: auto;
     min-height: 0;
-    padding-top: 0;
-    margin-top: -62px;
   }
   .hero__content {
     height: auto;
     min-height: 84vh;
     min-height: 84svh;
-    padding: 110px var(--page-x) 48px;
+    /* Clear the topbar, then the original 48px of breathing room. */
+    padding: calc(var(--topbar-h) + 48px) var(--page-x) 48px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -472,17 +487,44 @@
 
   /* ---------- Product detail ---------- */
   .product-detail {
-    gap: 24px;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 24px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .product-gallery,
+  .product-info {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
   .product-gallery__main {
-    border-radius: var(--radius-lg);
-    margin-bottom: 10px;
+    border-radius: var(--radius-lg) !important;
+    margin-bottom: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    aspect-ratio: 4 / 5 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+  .product-gallery__main img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
   }
   .product-gallery__thumbs {
     gap: 10px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 2px;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
   .product-thumb {
     width: 60px;
@@ -503,14 +545,20 @@
     gap: 12px;
     display: flex;
     align-items: center;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
   .pdp-pincode {
     display: flex !important;
     gap: 8px !important;
     width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
   .pdp-pincode input {
     flex: 1 !important;
+    min-width: 0 !important;
   }
   .pdp-pincode .btn--muted {
     white-space: nowrap !important;
@@ -518,6 +566,9 @@
   }
   .pdp-trust {
     gap: 8px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
   .pdp-trust p {
     font-size: 10px !important;
@@ -655,20 +706,50 @@
     letter-spacing: 0.08em;
   }
 
+  /* ---------- Instagram ---------- */
+  .insta-showcase-section {
+    padding: 36px var(--page-x);
+  }
+  .insta-showcase-head {
+    gap: 12px;
+  }
+  .insta-showcase-title {
+    font-size: 26px;
+  }
+  .insta-live-frame-wrapper {
+    border-radius: 14px;
+  }
+  .insta-live-frame-bar {
+    padding: 8px 12px;
+  }
+  .insta-live-frame-url {
+    font-size: 10px;
+    padding: 3px 10px;
+    max-width: 180px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .insta-live-iframe-container {
+    height: 460px;
+    max-height: 465px;
+    overflow: hidden;
+  }
+  .insta-live-footer {
+    padding: 12px 14px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
   /* ---------- Footer ---------- */
   .site-footer {
     padding: 44px var(--page-x) calc(32px + env(safe-area-inset-bottom));
     gap: 28px;
   }
-  .site-footer__vip {
-    padding: 24px 20px;
-  }
-  .site-footer__vip-title {
-    font-size: 22px;
-  }
-  .site-footer__vip-form {
-    min-width: auto;
-    width: 100%;
+  .site-footer__grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
   }
   .site-footer__logo {
     font-size: 26px;
@@ -681,6 +762,12 @@
   .site-footer__col ul {
     gap: 10px;
   }
+  .site-footer__bottom {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    text-align: center;
+  }
 
   /* ---------- Floating WhatsApp + toast ---------- */
   .whatsapp-float {
@@ -688,7 +775,9 @@
     height: 48px;
     right: 16px;
     bottom: calc(16px + env(safe-area-inset-bottom));
-    z-index: 999;
+    /* was 999 — that put the bubble above the header, the nav drawer and
+       the cart. It belongs below every panel. */
+    z-index: var(--z-float);
   }
   .whatsapp-float svg {
     width: 22px;
@@ -702,12 +791,15 @@
     text-align: center;
     font-size: 10px;
     padding: 12px 16px;
-    z-index: 1000;
+    z-index: var(--z-toast);
   }
 }
 
 /* ---------- Very small phones (≤360px) ---------- */
 @media (max-width: 360px) {
+  .insta-live-iframe-container {
+    height: 415px !important;
+  }
   .site-header__logo {
     font-size: 20px !important;
     letter-spacing: 0.18em !important;

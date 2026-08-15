@@ -93,10 +93,37 @@
 
   /* Page horizontal margin (responsive) */
   --page-x: var(--margin-mobile);
+
+  /* ---------- Fixed topbar (announcement bar + header) ----------
+     --topbar-h is the single source of truth for how far the fixed
+     topbar intrudes into the viewport. Layout.jsx measures the real
+     rendered element and overwrites this on <html>, so the values
+     below are only the pre-hydration fallback. Never hard-code a
+     header offset anywhere else — read this variable. */
+  --marquee-h: 34px;
+  --header-h: 62px;
+  --topbar-h: 96px;
+
+  /* ---------- Stacking order ----------
+     One scale for every layer that can overlap. Anything that floats
+     over page content must take a token from here so it can never
+     accidentally outrank the topbar. */
+  --z-content: 1;
+  --z-float: 40;
+  --z-topbar: 60;
+  --z-nav-overlay: 75;
+  --z-nav: 80;
+  --z-search: 90;
+  --z-cart-overlay: 95;
+  --z-cart: 96;
+  --z-toast: 120;
 }
 
 @media (min-width: 768px) {
   :root {
     --page-x: var(--margin-desktop);
+    --marquee-h: 38px;
+    --header-h: 72px;
+    --topbar-h: 110px;
   }
 }

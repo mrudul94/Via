@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import Icon from './Icon'
 import { VIA_INSTAGRAM } from '../config'
 
@@ -6,19 +6,11 @@ export default function InstaShowcase() {
   const [iframeLoaded, setIframeLoaded] = useState(false)
 
   useEffect(() => {
-    // Load Meta Instagram Embed Script if needed
-    if (!window.instgrm) {
-      const script = document.createElement('script')
-      script.src = 'https://www.instagram.com/embed.js'
-      script.async = true
-      script.onload = () => {
-        if (window.instgrm) {
-          window.instgrm.Embeds.process()
-        }
-      }
-      document.body.appendChild(script)
-    } else {
-      window.instgrm.Embeds.process()
+    // Process Instagram embed script if loaded
+    if (window.instgrm) {
+      try {
+        window.instgrm.Embeds.process()
+      } catch (e) {}
     }
   }, [])
 
@@ -29,11 +21,9 @@ export default function InstaShowcase() {
         <div className="insta-showcase-head">
           <div className="insta-showcase-head__left">
             <span className="insta-showcase-tag">
-              <span className="insta-live-dot"></span> LIVE INSTAGRAM FEED
+              <span className="insta-live-dot"></span> LIVE INSTAGRAM WINDOW
             </span>
-            <h2 className="insta-showcase-title">
-              @house_of_via___
-            </h2>
+            <h2 className="insta-showcase-title">@house_of_via___</h2>
           </div>
           <a
             href={VIA_INSTAGRAM}
@@ -46,9 +36,9 @@ export default function InstaShowcase() {
           </a>
         </div>
 
-        {/* Live Embedded Instagram Window Frame */}
+        {/* Live Instagram Embedded Frame */}
         <div className="insta-live-frame-wrapper">
-          {/* Top Browser / App Bar Header */}
+          {/* Frame Top Browser Bar */}
           <div className="insta-live-frame-bar">
             <div className="insta-live-frame-dots">
               <span className="dot dot-red"></span>
@@ -56,7 +46,8 @@ export default function InstaShowcase() {
               <span className="dot dot-green"></span>
             </div>
             <div className="insta-live-frame-url">
-              <Icon name="lock" className="icon-xs" /> instagram.com/house_of_via___
+              <Icon name="lock" className="icon-xs" />
+              <span>instagram.com/house_of_via___</span>
             </div>
             <a
               href={VIA_INSTAGRAM}
@@ -69,11 +60,11 @@ export default function InstaShowcase() {
             </a>
           </div>
 
-          {/* Embedded Live Window */}
+          {/* Embedded Live Window Container */}
           <div className="insta-live-iframe-container">
             <iframe
               src="https://www.instagram.com/house_of_via___/embed/"
-              title="VIA Official Instagram Profile Live Window"
+              title="VIA Official Instagram Live Window"
               className="insta-live-iframe"
               onLoad={() => setIframeLoaded(true)}
               allowTransparency="true"
@@ -99,10 +90,9 @@ export default function InstaShowcase() {
             href={VIA_INSTAGRAM}
             target="_blank"
             rel="noreferrer"
-            className="btn btn--outline"
-            style={{ borderRadius: '30px', fontSize: '11px', letterSpacing: '0.1em' }}
+            className="insta-footer-link"
           >
-            View Full Profile on Instagram →
+            View Full Profile on Instagram &rarr;
           </a>
         </div>
       </div>
