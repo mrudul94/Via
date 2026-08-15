@@ -29,6 +29,7 @@ export default function AdminDashboard({ adminSession, onLogout }) {
     exportStoreJSON,
     importStoreJSON,
     syncStorefront,
+    openStorefront,
   } = useCMS()
 
 
@@ -225,12 +226,12 @@ export default function AdminDashboard({ adminSession, onLogout }) {
           </span>
         </div>
         <div className="admin-nav-bar__actions">
-          <button className="btn btn--gold" style={{ background: 'var(--gold-gradient)', color: '#fff' }} onClick={syncStorefront} title="Broadcast real-time refresh to storefront">
-            <Icon name="sync" /> Refresh Main Website
+          <button className="btn btn--gold" style={{ background: 'var(--gold-gradient)', color: '#fff' }} onClick={syncStorefront} title="Fetch latest data from Supabase Cloud">
+            <Icon name="sync" /> Refresh Database
           </button>
-          <a href="http://localhost:5173" target="_blank" rel="noreferrer" className="btn btn--outline" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.4)' }} title="Open live storefront in new tab">
+          <button className="btn btn--outline" style={{ color: '#fff', borderColor: 'rgba(255,255,255,0.4)' }} onClick={openStorefront} title="Open storefront in new tab">
             <Icon name="open_in_new" /> View Storefront
-          </a>
+          </button>
           {onLogout && (
             <button className="btn btn--outline" style={{ color: '#ef4444', borderColor: 'rgba(239,68,68,0.4)' }} onClick={onLogout}>
               Sign Out

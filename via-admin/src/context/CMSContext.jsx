@@ -95,25 +95,19 @@ export function CMSProvider({ children }) {
     loadCloudData()
   }, [loadCloudData])
 
-  // Broadcast change cross-tab
-  const triggerSync = useCallback(() => {
+  const openStorefront = useCallback(() => {
+    const storefrontUrl = import.meta.env.VITE_STOREFRONT_URL || 'http://localhost:5173'
     try {
-      const bc = new BroadcastChannel('via_cms_channel')
-      bc.postMessage('sync')
-      bc.close()
-    } catch (err) {}
+      window.open(storefrontUrl, '_blank', 'noopener,noreferrer')
+    } catch (e) {}
   }, [])
 
   const syncStorefront = useCallback(async () => {
     if (isSupabaseConfigured()) {
       await loadCloudData()
     }
-    triggerSync()
-    try {
-      window.open('http://localhost:5173', 'via_storefront')
-    } catch (e) {}
-    notify('⚡ Main website synced & refreshed in real-time!')
-  }, [loadCloudData, triggerSync])
+    notify('⚡ Database data refreshed!')
+  }, [loadCloudData])
 
   // Helper to persist state to localStorage as fallback cache
   const persistLocal = (newData) => {
@@ -146,8 +140,7 @@ export function CMSProvider({ children }) {
     if (isSupabaseConfigured()) {
       await loadCloudData()
     }
-    triggerSync()
-    notify('Product created successfully!')
+    notify('Product created successfully in database!')
   }, [data.categories, loadCloudData])
 
   const updateProduct = useCallback(async (id, updatedFields) => {
@@ -173,8 +166,7 @@ export function CMSProvider({ children }) {
     if (isSupabaseConfigured()) {
       await loadCloudData()
     }
-    triggerSync()
-    notify('Product updated!')
+    notify('Product updated in database!')
   }, [data.categories, loadCloudData])
 
   const deleteProduct = useCallback(async (id) => {
@@ -200,8 +192,7 @@ export function CMSProvider({ children }) {
     if (isSupabaseConfigured()) {
       await loadCloudData()
     }
-    triggerSync()
-    notify('Product deleted.')
+    notify('Product deleted from database.')
   }, [loadCloudData])
 
   // --- Hero Section ---
@@ -210,15 +201,14 @@ export function CMSProvider({ children }) {
       try {
         await adminCmsService.updateHero(heroData)
         await loadCloudData()
-        triggerSync()
         notify('Homepage Hero updated in database!')
         return
       } catch (err) {
         notify('Error saving Hero: ' + err.message)
+        return
       }
     }
     setData((prev) => ({ ...prev, hero: { ...prev.hero, ...heroData } }))
-    triggerSync()
     notify('Homepage Hero updated!')
   }, [loadCloudData])
 
@@ -228,15 +218,14 @@ export function CMSProvider({ children }) {
       try {
         await adminCmsService.saveCategories(categoriesList)
         await loadCloudData()
-        triggerSync()
         notify('Categories saved in database!')
         return
       } catch (err) {
         notify('Error saving categories: ' + err.message)
+        return
       }
     }
     setData((prev) => ({ ...prev, categories: categoriesList }))
-    triggerSync()
     notify('Categories saved!')
   }, [loadCloudData])
 
@@ -246,15 +235,14 @@ export function CMSProvider({ children }) {
       try {
         await adminCmsService.saveMarquee(marqueeList)
         await loadCloudData()
-        triggerSync()
         notify('Announcement ticker updated in database!')
         return
       } catch (err) {
         notify('Error saving marquee: ' + err.message)
+        return
       }
     }
     setData((prev) => ({ ...prev, marquee: marqueeList }))
-    triggerSync()
     notify('Announcement ticker updated!')
   }, [loadCloudData])
 
@@ -264,15 +252,14 @@ export function CMSProvider({ children }) {
       try {
         await adminCmsService.saveReviews(reviewsList)
         await loadCloudData()
-        triggerSync()
         notify('Reviews updated in database!')
         return
       } catch (err) {
         notify('Error saving reviews: ' + err.message)
+        return
       }
     }
     setData((prev) => ({ ...prev, reviews: reviewsList }))
-    triggerSync()
     notify('Customer reviews updated!')
   }, [loadCloudData])
 
@@ -282,15 +269,14 @@ export function CMSProvider({ children }) {
       try {
         await adminCmsService.updateSettings(settingsData)
         await loadCloudData()
-        triggerSync()
         notify('Store settings saved in database!')
         return
       } catch (err) {
         notify('Error saving settings: ' + err.message)
+        return
       }
     }
     setData((prev) => ({ ...prev, settings: { ...prev.settings, ...settingsData } }))
-    triggerSync()
     notify('Store configuration saved!')
   }, [loadCloudData])
 
@@ -308,7 +294,6 @@ export function CMSProvider({ children }) {
         const count = await adminCmsService.migrateLegacyDataToSupabase(parsed)
         await loadCloudData()
         setHasLegacyData(false)
-        triggerSync()
         notify(`Successfully migrated legacy data (${count} products) to Supabase Cloud Database!`)
       }
     } catch (err) {
@@ -342,7 +327,6 @@ export function CMSProvider({ children }) {
         } else {
           setData(jsonObj)
         }
-        triggerSync()
         notify('Store data imported successfully!')
       } else {
         alert('Invalid JSON store format.')
@@ -375,9 +359,11 @@ export function CMSProvider({ children }) {
     exportStoreJSON,
     importStoreJSON,
     syncStorefront,
+    openStorefront,
   }
 
   return <CMSContext.Provider value={value}>{children}</CMSContext.Provider>
 }
 
 export const useCMS = () => useContext(CMSContext)
+

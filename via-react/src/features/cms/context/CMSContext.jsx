@@ -36,17 +36,8 @@ export function CMSProvider({ children }) {
     refreshData()
   }, [refreshData])
 
-  // Setup Supabase Realtime / Cross-tab Broadcast sync & Focus Re-fetch
+  // Setup Supabase Realtime Sync, Focus Re-fetch & Polling Fallback
   useEffect(() => {
-    let bc
-    try {
-      bc = new BroadcastChannel('via_cms_channel')
-      bc.onmessage = () => {
-        refreshData()
-        toast('✨ Storefront catalog refreshed live!')
-      }
-    } catch (e) {}
-
     // Auto refresh whenever user focuses or switches back to this tab
     const handleFocus = () => {
       refreshData()
@@ -60,25 +51,24 @@ export function CMSProvider({ children }) {
     window.addEventListener('focus', handleFocus)
     document.addEventListener('visibilitychange', handleVisibility)
 
-    // Polling fallback every 4 seconds for instant side-by-side window updates
+    // Polling fallback every 20 seconds for cross-device background sync
     const pollTimer = setInterval(() => {
       refreshData()
-    }, 4000)
+    }, 20000)
 
-    // Optional Supabase Realtime Listener
+    // Supabase Realtime Listener for instant database changes
     let channel
     if (isSupabaseConfigured() && supabase) {
       channel = supabase
         .channel('public:cms_changes')
         .on('postgres_changes', { event: '*', schema: 'public' }, () => {
           refreshData()
-          toast('✨ Storefront catalog refreshed live!')
+          toast('✨ Catalog updated live!')
         })
         .subscribe()
     }
 
     return () => {
-      if (bc) bc.close()
       if (channel && supabase) supabase.removeChannel(channel)
       window.removeEventListener('focus', handleFocus)
       document.removeEventListener('visibilitychange', handleVisibility)

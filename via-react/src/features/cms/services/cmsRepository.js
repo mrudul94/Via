@@ -71,16 +71,21 @@ export const cmsRepository = {
    */
   fetchFromSupabase: async () => {
     if (!isSupabaseConfigured() || !supabase) {
+      console.warn('[Supabase CMS] VITE_SUPABASE_URL not configured. Using local fallback.')
       return cmsRepository.loadData()
     }
 
     try {
       // 1. Fetch Categories
-      const { data: catData } = await supabase
+      const { data: catData, error: catErr } = await supabase
         .from('categories')
         .select('*')
-        .eq('is_active', true)
+        .or('is_active.eq.true,is_active.is.null')
         .order('priority', { ascending: true })
+
+      if (catErr) {
+        console.error('[Supabase CMS Error] Failed to fetch categories:', catErr)
+      }
 
       const categories = (catData || []).map((c) => ({
         id: c.id,
@@ -92,20 +97,22 @@ export const cmsRepository = {
       // Create Category lookup map by ID and by Name
       const catMapById = new Map(categories.map((c) => [c.id, c.name]))
 
-      // 2. Fetch Products
+      // 2. Fetch Products (Active or Null status)
       const { data: prodData, error: prodErr } = await supabase
         .from('products')
         .select('*')
-        .eq('is_active', true)
+        .or('is_active.eq.true,is_active.is.null')
         .order('priority', { ascending: true })
 
-      if (prodErr) throw prodErr
+      if (prodErr) {
+        console.error('[Supabase CMS Error] Failed to fetch products:', prodErr)
+        throw prodErr
+      }
 
       const products = (prodData || []).map((p) => {
-        // Resolve category name from FK category_id if available, fallback to category_name
         const resolvedCategory = p.category_id ? (catMapById.get(p.category_id) || p.category_name) : p.category_name
         return {
-          id: p.id, // Preserves text ID or generated UUID
+          id: p.id,
           name: p.name,
           category: resolvedCategory || 'Necklaces',
           categoryId: p.category_id,
@@ -121,11 +128,13 @@ export const cmsRepository = {
       })
 
       // 3. Fetch Hero Banner
-      const { data: heroData } = await supabase
+      const { data: heroData, error: heroErr } = await supabase
         .from('hero')
         .select('*')
         .eq('id', 1)
         .maybeSingle()
+
+      if (heroErr) console.error('[Supabase CMS Error] Failed to fetch hero:', heroErr)
 
       const hero = heroData
         ? {
@@ -138,19 +147,23 @@ export const cmsRepository = {
         : DEFAULT_HERO
 
       // 4. Fetch Marquee Announcements
-      const { data: annData } = await supabase
+      const { data: annData, error: annErr } = await supabase
         .from('announcements')
         .select('*')
-        .eq('is_active', true)
+        .or('is_active.eq.true,is_active.is.null')
         .order('priority', { ascending: true })
+
+      if (annErr) console.error('[Supabase CMS Error] Failed to fetch announcements:', annErr)
 
       const marquee = (annData || []).map((a) => a.text).filter(Boolean)
 
       // 5. Fetch Reviews
-      const { data: revData } = await supabase
+      const { data: revData, error: revErr } = await supabase
         .from('reviews')
         .select('*')
-        .eq('is_active', true)
+        .or('is_active.eq.true,is_active.is.null')
+
+      if (revErr) console.error('[Supabase CMS Error] Failed to fetch reviews:', revErr)
 
       const reviews = (revData || []).map((r) => ({
         id: r.id,
@@ -160,11 +173,13 @@ export const cmsRepository = {
       }))
 
       // 6. Fetch Store Settings
-      const { data: setDa } = await supabase
+      const { data: setDa, error: setErr } = await supabase
         .from('store_settings')
         .select('*')
         .eq('id', 1)
         .maybeSingle()
+
+      if (setErr) console.error('[Supabase CMS Error] Failed to fetch store_settings:', setErr)
 
       const settings = setDa
         ? {
@@ -176,7 +191,7 @@ export const cmsRepository = {
         : DEFAULT_SETTINGS
 
       const fullData = {
-        products: products.length > 0 ? products : DEFAULT_PRODUCTS,
+        products,
         hero,
         categories: categories.length > 0 ? categories : DEFAULT_CATEGORIES,
         marquee: marquee.length > 0 ? marquee : DEFAULT_MARQUEE,
@@ -184,14 +199,16 @@ export const cmsRepository = {
         settings,
       }
 
-      // Cache locally for offline/fast load fallback
+      console.log(`[Supabase CMS Success] Loaded ${products.length} products, ${categories.length} categories from Supabase.`)
+
+      // Cache locally for offline/fast initial render fallback
       try {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(fullData))
       } catch (err) {}
 
       return fullData
     } catch (err) {
-      console.error('Failed to fetch CMS data from Supabase, returning local fallback:', err)
+      console.error('[Supabase CMS Failure] Cloud data fetch failed, using local cache:', err)
       return cmsRepository.loadData()
     }
   },
